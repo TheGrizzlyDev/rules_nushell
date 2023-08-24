@@ -9,5 +9,6 @@
 				"BazelBuild.vscode-bazel"
 			]
 		}
-	}
+	},
+	"postStartCommand": "pre-commit install"
 }
