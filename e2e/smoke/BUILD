@@ -3,15 +3,17 @@ Add a basic smoke-test target below.
 """
 
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
-# load("rules_nushell//nushell:defs.bzl", "...")
+load("rules_nushell//nushell:defs.bzl", "nu_genrule")
 
-# Replace with a usage of your rule/macro
-filegroup(name = "empty")
+nu_genrule(
+    name = "test_generate_yml",
+    outs = ["test.yml"],
+    cmd = "{foo: 'bar'} | to yaml | save test.yml",
+)
 
 build_test(
     name = "smoke_test",
     targets = [
-        # targets you add above
-        ":empty",
+        ":test_generate_yml",
     ],
 )
