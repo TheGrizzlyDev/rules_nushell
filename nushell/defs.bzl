@@ -1,5 +1,7 @@
 "Public API re-exports"
 
-def example():
-    """This is an example"""
+def nushell_genrule():
+    """nushell based replacement for genrule"""
     pass
+
+nu_genrule = nushell_genrule

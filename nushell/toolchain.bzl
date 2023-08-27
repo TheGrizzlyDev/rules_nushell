@@ -1,7 +1,7 @@
 """This module implements the language-specific toolchain rule.
 """
 
-MylangInfo = provider(
+NushellInfo = provider(
     doc = "Information about how to invoke the tool executable.",
     fields = {
         "target_tool_path": "Path to the tool executable for the target platform.",
