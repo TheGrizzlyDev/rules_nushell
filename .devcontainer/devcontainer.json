@@ -7,8 +7,9 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-azuretools.vscode-docker", // docker support
-        "BazelBuild.vscode-bazel" // bazel support
+        "ms-azuretools.vscode-docker",
+        "BazelBuild.vscode-bazel",
+        "TheNuProjectContributors.vscode-nushell-lang"
       ]
     }
   },
