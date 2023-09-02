@@ -11,8 +11,11 @@ def nushell_genrule_impl(ctx):
     nuscript = ctx.actions.declare_file("_gen_%s_cmd.nu" % (ctx.attr.name))
     ctx.actions.write(nuscript, ctx.attr.cmd, is_executable = True)
 
+    build_path_list = lambda files: "{%s}" % (",".join(["\"%s\": \"%s\"" % (out.short_path, out.path) for out in files]))
     nutemplate_params = {
-        "env_declared_outs": "{%s}" % (",".join(["\"%s\": \"%s\"" % (out.short_path, out.path) for out in ctx.outputs.outs])),
+        "env_declared_outs": build_path_list(ctx.outputs.outs),
+        "env_declared_ins": build_path_list(ctx.files.srcs),
+        "env_declared_tools": build_path_list(ctx.files.tools),
     }
 
     nuconfig = ctx.actions.declare_file("_gen_%s_config.nu" % (ctx.attr.name))
@@ -32,14 +35,14 @@ def nushell_genrule_impl(ctx):
     ctx.actions.run(
         outputs = ctx.outputs.outs,
         executable = "/opt/nu/nu",
-        inputs = [nuscript, nuconfig, nuenv],
+        inputs = [nuscript, nuconfig, nuenv] + ctx.files.tools + ctx.files.srcs,
         arguments = [
             "--config",
             nuconfig.path,
             "--env-config",
             nuenv.path,
             nuscript.path,
-        ],  # output file needs to be replaced in the script
+        ],
     )
 
 nushell_genrule = rule(
@@ -47,6 +50,8 @@ nushell_genrule = rule(
     attrs = {
         "cmd": attr.string(),
         "outs": attr.output_list(allow_empty = False),
+        "srcs": attr.label_list(cfg = "target"),
+        "tools": attr.label_list(cfg = "exec"),
         "_nuconfig_template": attr.label(
             default = "config.tmpl.nu",
             allow_single_file = True,
