@@ -6,9 +6,16 @@ load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@rules_nushell//nushell:defs.bzl", "nu_genrule")
 
 nu_genrule(
-    name = "test_no_inputs_no_tools",
+    name = "no_inputs_no_tools",
     outs = ["test.yml"],
     cmd = "{foo: 'bar'} | to yaml | save $bazel.outs.'test.yml'",
+)
+
+nu_genrule(
+    name = "with_inputs",
+    srcs = [":no_inputs_no_tools"],
+    outs = ["test.json"],
+    cmd = "open $bazel.ins.'test.yml' | to json | save $bazel.outs.'test.json'",
 )
 
 sh_binary(
@@ -17,7 +24,7 @@ sh_binary(
 )
 
 nu_genrule(
-    name = "test_with_tool",
+    name = "with_tool",
     outs = ["hello.txt"],
     cmd = "run-external $bazel.tools.'hello_world_tool' --redirect-stdout | save $bazel.outs.'hello.txt'",
     tools = [":hello_world_tool"],
@@ -26,7 +33,8 @@ nu_genrule(
 build_test(
     name = "smoke_test",
     targets = [
-        ":test_no_inputs_no_tools",
-        ":test_with_tool",
+        ":no_inputs_no_tools",
+        ":with_tool",
+        ":with_inputs",
     ],
 )
