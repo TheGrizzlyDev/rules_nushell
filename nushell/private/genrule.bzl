@@ -20,7 +20,7 @@ def _build_nuconfig(ctx, substitutions):
     return nuconfig
 
 def _nushell_genrule_impl(ctx):
-    build_path_list = lambda files: "{%s}" % (",".join(["\"%s\": \"%s\"" % (out.short_path, out.path) for out in files]))
+    build_path_list = lambda files: "{%s}" % (",".join(["\"%s\": \"%s\"" % (file.short_path, file.path) for file in files]))
     nutemplate_params = {
         "env_declared_ins": build_path_list(ctx.files.srcs),
         "env_declared_tools": build_path_list(ctx.files.tools),
@@ -46,7 +46,7 @@ def _nushell_genrule_impl(ctx):
     )
 
 def _nushell_genrule_repl_impl(ctx):
-    build_path_list = lambda files: "{%s}" % (",".join(["\"%s\": \"%s\"" % (out.short_path, out.short_path) for out in files]))
+    build_path_list = lambda files: "{%s}" % (",".join(["\"%s\": \"%s\"" % (file.short_path, file.short_path) for file in files]))
     nutemplate_params = {
         "env_declared_ins": build_path_list(ctx.files.srcs),
         "env_declared_tools": build_path_list(ctx.files.tools),
